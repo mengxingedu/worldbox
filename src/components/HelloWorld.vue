@@ -1,58 +1,80 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="activeConfig">
+    <div class="activeConfig-container">
+      <Editor id="tinymce" v-model="tinymceHtml" :init="editorInit" />
+    </div>
   </div>
 </template>
 
 <script>
+// 引入组件
+import tinymce from 'tinymce/tinymce'
+import Editor from '@tinymce/tinymce-vue'
+// 引入富文本编辑器主题的js和css
+import 'tinymce/themes/silver/theme.min.js'
+import 'tinymce/skins/ui/oxide/skin.min.css'
+// 扩展插件
+import 'tinymce/plugins/image'
+import 'tinymce/plugins/link'
+import 'tinymce/plugins/code'
+import 'tinymce/plugins/table'
+import 'tinymce/plugins/lists'
+import 'tinymce/plugins/wordcount'
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  name: 'ActiveConfig',
+  components: { Editor },
+  data() {
+    return {
+      // tinymce的绑定值
+      tinymceHtml: '',
+      // tinymce的初始化配置
+      editorInit: {
+        selector: '#tinymce',
+        language_url: '/tinymce/langs/zh_CN.js',
+        language: 'zh_CN',
+        skin_url: '/tinymce/skins/ui/oxide',
+        height: 400,
+        plugins: 'link lists image code table wordcount importword',
+        toolbar: 'bold italic underline strikethrough | fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | undo redo | link unlink image code | removeformat | importword',
+        // 此处为图片上传处理函数
+        importword_handler: (editor,files,next) => {
+          // this.handleImgUpload(blobInfo, success, failure)
+          console.log(editor,files,next)
+        },
+        images_upload_handler: (blobInfo, success) => {
+          const img = 'data:image/jpeg;base64,' + blobInfo.base64()
+          success(img)
+        },
+        importword_filter: function(result, insert, message) {
+          console.log(result)
+          console.log(insert)
+          console.log(message)
+          // 自定义操作部分
+          insert(result) // 回插函数
+        },
+        // statusbar: false // 是否隐藏底部的状态栏
+        // menubar: false, // 是否隐藏最上方的菜单
+        branding: false // 是否禁用“Powered by TinyMCE”
+      }
+    }
+  },
+  mounted() {
+    tinymce.init({})
+  },
+  methods: {
+    // 图片上传
+    handleImgUpload(blobInfo, success, failure) {
+      console.log(blobInfo, success, failure)
+    }
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+<!--
+<style lang="scss" scoped>
+.activeConfig {
+  &-container {
+    margin: 30px;
+  }
 }
 </style>
+-->
