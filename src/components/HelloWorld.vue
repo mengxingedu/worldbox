@@ -37,10 +37,10 @@ export default {
         plugins: 'link lists image code table wordcount importword',
         toolbar: 'bold italic underline strikethrough | fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent blockquote | undo redo | link unlink image code | removeformat | importword',
         // 此处为图片上传处理函数
-        importword_handler: (editor,files,next) => {
-          // this.handleImgUpload(blobInfo, success, failure)
-          console.log(editor,files,next)
-        },
+        // importword_handler: (editor,files,next) => {
+        //   // this.handleImgUpload(blobInfo, success, failure)
+        //   console.log(editor,files,next)
+        // },
         images_upload_handler: (blobInfo, success) => {
           const img = 'data:image/jpeg;base64,' + blobInfo.base64()
           success(img)
